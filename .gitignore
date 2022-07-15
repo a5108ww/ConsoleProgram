@@ -1,0 +1,16 @@
+
+
+# 忽略appSettings.config
+appSettings.config
+
+#忽略 obj、bin 目錄底下檔案
+obj/
+
+bin/
+
+
+#忽略 /File底下的檔案
+
+
+#忽略.vs目錄底下東西
+.vs/
