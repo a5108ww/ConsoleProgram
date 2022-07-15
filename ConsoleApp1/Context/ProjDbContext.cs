@@ -10,21 +10,23 @@ namespace ConsoleApp1.Context
 {
     public class ProjDbContext : DbContext
     {
+        //建立連線SQLConnetion
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(ConfigurationService.GetDbConnectionString());
         }
 
-       
-
+        //資料表DbSet
         public DbSet<QueueMessage> QueueMessage { get; set; }
-
+        /*可略過，如table 沒有PK 需要用以下設定*/
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<QueueMessage>()
-            //.HasMany(p => p.QueueMessage)
-            //.HasNoKey()
-            ;
+         //該table 沒有PK Key
+         //modelBuilder.Entity<QueueMessage>().HasNoKey();
+         //.HasMany(p => p.QueueMessage)
+         //.HasNoKey()
+         ;
         }
     }
 }

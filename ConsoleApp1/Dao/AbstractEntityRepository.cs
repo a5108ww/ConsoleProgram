@@ -38,7 +38,7 @@ namespace ConsoleApp1.Dao
             }
         }
 
-        public virtual void Save(T entity, EntityState entityState)
+        public virtual void Save(T entity, EntityState entityState = EntityState.Modified)
         {
             if (entity != null)
             {
@@ -46,7 +46,7 @@ namespace ConsoleApp1.Dao
             }
         }
 
-        public virtual void Save(List<T> entitys, EntityState entityState)
+        public virtual void Save(List<T> entitys, EntityState entityState = EntityState.Modified)
         {
             if (entitys != null && entitys.Count > 0)
             {
