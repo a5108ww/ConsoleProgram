@@ -17,8 +17,6 @@ namespace ConsoleApp1
         public static void Init()
         {
             db = new ProjDbContext();
-
-            //
             queueMessageRepository = new QueueMessageRepository(db);
         }
 
