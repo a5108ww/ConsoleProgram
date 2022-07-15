@@ -54,5 +54,31 @@ namespace ConsoleApp1
             QueueMessage queueMessage1 = queueMessages.Where(p => p.Sn == 1).FirstOrDefault();
             queueMessageRepository.Save(queueMessage1);
         }
+
+        public void SaveDataWithTransaction()
+        {
+            using (var transaction = db.Database.BeginTransaction())
+            {
+                try
+                {
+                    QueueMessage queueMessage1 = queueMessageRepository.GetBySN(1);
+                    queueMessage1.MessageText = "test1";
+
+                    db.QueueMessage.Add(queueMessage1);
+                    db.SaveChanges();
+
+                    QueueMessage queueMessage2 = queueMessageRepository.GetBySN(2);
+                    queueMessage2.MessageText = "test2";
+
+                    db.QueueMessage.Add(queueMessage2);
+
+                    transaction.Commit();
+                }
+                catch(Exception ex)
+                {
+                    transaction.Rollback();
+                }
+            }
+        }
     }
 }
