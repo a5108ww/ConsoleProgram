@@ -7,6 +7,8 @@ namespace ConsoleApp1.Entity
 {
     public class QueueMessage
     {
+        public const string TableName = "QueueMessage";
+
         [Key]
         public int Sn { get; set; }
 

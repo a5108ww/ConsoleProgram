@@ -25,24 +25,30 @@ namespace ConsoleApp1
 
         //1.
         private static QueueMessageRepository queueMessageRepository;
-        
-       
+        private static QueueMessageStatusRepository queueMessageStatusRepository;
+
+
         public static void Init()
         {
             db = new ProjDbContext();
 
             //2.
             queueMessageRepository = new QueueMessageRepository(db);
+            queueMessageStatusRepository = new QueueMessageStatusRepository(db);
         }
 
         static void Main(string[] args)
         {
             Init();
 
+            SaveDataWithTransaction();
+
+            QueueMessage q = queueMessageRepository.GetBySnWithSql(2);
+
             Console.WriteLine("Hello World!");
         }
 
-        public void SaveData()
+        public static void SaveData()
         {
             //新增資料
             QueueMessage queueMessage = new QueueMessage();
@@ -55,26 +61,32 @@ namespace ConsoleApp1
             queueMessageRepository.Save(queueMessage1);
         }
 
-        public void SaveDataWithTransaction()
+        /// <summary>
+        /// 設定交易
+        /// </summary>
+        public static void SaveDataWithTransaction()
         {
             using (var transaction = db.Database.BeginTransaction())
             {
                 try
                 {
-                    QueueMessage queueMessage1 = queueMessageRepository.GetBySN(1);
-                    queueMessage1.MessageText = "test1";
+                    QueueMessage queueMessage1 = queueMessageRepository.GetBySnWithSql(2);
+                    queueMessage1.MessageText = "test3";
 
-                    db.QueueMessage.Add(queueMessage1);
+                    db.Entry(queueMessage1).State = EntityState.Modified;
                     db.SaveChanges();
 
-                    QueueMessage queueMessage2 = queueMessageRepository.GetBySN(2);
-                    queueMessage2.MessageText = "test2";
+                    //throw new Exception("就是要Exception");
 
-                    db.QueueMessage.Add(queueMessage2);
+                    QueueMessageStatus queueMessageStatus = queueMessageStatusRepository.GetEntitiesQ().Where(p => p.QueueMessageStatusID == 1).FirstOrDefault();
+                    queueMessageStatus.QueueMessageStatusDescription = "test4";
+
+                    db.Entry(queueMessageStatus).State = EntityState.Modified;
+                    db.SaveChanges();
 
                     transaction.Commit();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
                 }

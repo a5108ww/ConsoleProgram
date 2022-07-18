@@ -18,6 +18,7 @@ namespace ConsoleApp1.Context
 
         //資料表DbSet
         public DbSet<QueueMessage> QueueMessage { get; set; }
+        public DbSet<QueueMessageStatus> QueueMessageStatus { get; set; }
         /*可略過，如table 沒有PK 需要用以下設定*/
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

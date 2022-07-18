@@ -1,6 +1,7 @@
 ﻿using ConsoleApp1.Context;
 using ConsoleApp1.Entity;
 using ConsoleApp1.Extensions;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace ConsoleApp1.Dao
             {
                 if(editQueueMessage.Sn > 0)
                 {
-                    editQueueMessage = GetBySN(editQueueMessage.Sn);
+                    editQueueMessage = GetBySnWithSql(editQueueMessage.Sn);
 
                     editQueueMessage.MessageID = queueMessage.MessageID;
                     editQueueMessage.MessageText = queueMessage.MessageText;
@@ -58,9 +59,32 @@ namespace ConsoleApp1.Dao
             }
         }
 
+        /// <summary>
+        /// EntityFrame 下sql
+        /// </summary>
+        /// <param name="sn"></param>
+        /// <returns></returns>
+        public QueueMessage GetBySnWithSql(int sn)
+        {
+            StringBuilder sb = new StringBuilder();
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            sb.Append(" Select * From [" + QueueMessage.TableName + "] as " + QueueMessage.TableName + " ");
+            sb.Append(" Where 1 = 1 ");
+
+            if (sn > 0)
+            {
+                sb.Append(" And Sn = @Sn");
+                parameters.Add(new SqlParameter("Sn", sn));
+            }
+           
+            return db.QueueMessage.FromSqlRaw(sb.ToString(), parameters.ToArray()).FirstOrDefault();
+            //return db.QueueMessage.Where(p => p.Sn == sn).FirstOrDefault();
+        }
+
         public QueueMessage GetBySN(int sn)
         {
-            return db.QueueMessage.Where(p => p.Sn == sn).FirstOrDefault();
+            return GetEntitiesQ().Where(p => p.Sn == sn).FirstOrDefault();
         }
     }
 }
